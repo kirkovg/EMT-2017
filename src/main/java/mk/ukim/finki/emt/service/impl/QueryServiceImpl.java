@@ -64,5 +64,5 @@ public class QueryServiceImpl implements QueryService {
   @Override
   public List<Book> searchBook(String query) {
     return searchRepository.searchPhrase(Book.class,query, "name","isbn", "category.name", "authors.nameAndLastName");
-  }
+}
 }

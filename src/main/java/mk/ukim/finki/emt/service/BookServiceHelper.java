@@ -14,8 +14,6 @@ public interface BookServiceHelper {
 
   List<Book> getBooksInCategory(Long categoryId);
 
-  BookDetails getBookDetails(Long bookId);
-
   Book createBook(
     String name,
     Long categoryId,
@@ -42,9 +40,6 @@ public interface BookServiceHelper {
   );
 
 
-  BookPicture addBookPicture(
-    Long bookId,
-    byte[] bytes,
-    String contentType) throws SQLException;
+
 
 }

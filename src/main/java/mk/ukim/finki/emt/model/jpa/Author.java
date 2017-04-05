@@ -17,4 +17,11 @@ public class Author extends BaseEntity {
   @Analyzer(definition = "emtAnalyser")
   @Boost(1f)
   public String nameAndLastName;
+
+  public Author(String nameAndLastName) {
+    this.nameAndLastName = nameAndLastName;
+  }
+
+  public Author() {
+  }
 }

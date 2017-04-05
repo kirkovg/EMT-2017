@@ -1,10 +1,8 @@
 package mk.ukim.finki.emt.service.impl;
 
 import mk.ukim.finki.emt.model.exceptions.CategoryInUseException;
-import mk.ukim.finki.emt.model.jpa.Book;
-import mk.ukim.finki.emt.model.jpa.BookPicture;
-import mk.ukim.finki.emt.model.jpa.Category;
-import mk.ukim.finki.emt.model.jpa.DeliveryPackage;
+import mk.ukim.finki.emt.model.jpa.*;
+import mk.ukim.finki.emt.service.BookDetailsServiceHelper;
 import mk.ukim.finki.emt.service.BookServiceHelper;
 import mk.ukim.finki.emt.service.CategoryServiceHelper;
 import mk.ukim.finki.emt.service.StoreManagementService;
@@ -24,6 +22,9 @@ public class StoreManagementServiceImpl implements StoreManagementService {
 
   @Autowired
   private BookServiceHelper bookServiceHelper;
+
+  @Autowired
+  private BookDetailsServiceHelper bookDetailsServiceHelper;
 
   @Override
   public Category createTopLevelCategory(String name) {
@@ -112,6 +113,6 @@ public class StoreManagementServiceImpl implements StoreManagementService {
 
   @Override
   public BookPicture addBookPicture(Long bookId, byte[] bytes, String contentType) throws SQLException {
-    return bookServiceHelper.addBookPicture(bookId, bytes, contentType);
+    return bookDetailsServiceHelper.addBookPicture(bookId, bytes, contentType);
   }
 }

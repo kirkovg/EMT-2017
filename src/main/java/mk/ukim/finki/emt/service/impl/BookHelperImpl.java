@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,88 +20,78 @@ import java.util.List;
 @Service
 public class BookHelperImpl implements BookServiceHelper {
 
-  /**
-   * TODO: move this into book details helper
-   */
-  @Autowired
-  BookPictureRepository bookPictureRepository;
-  private CategoryRepository categoryRepository;
-  private BookRepository bookRepository;
-  private AuthorsRepository authorsRepository;
+    private CategoryRepository categoryRepository;
+    private BookRepository bookRepository;
+    private AuthorsRepository authorsRepository;
 
 
-  @Autowired
-  public BookHelperImpl(
-    CategoryRepository categoryRepository,
-    BookRepository bookRepository,
-    AuthorsRepository authorsRepository
-  ) {
-    this.categoryRepository = categoryRepository;
-    this.bookRepository = bookRepository;
-    this.authorsRepository = authorsRepository;
-  }
-
-  @Override
-  public List<Book> getBooksInCategory(Long categoryId) {
-    return null;
-  }
-
-  @Override
-  public BookDetails getBookDetails(Long bookId) {
-    return null;
-  }
-
-  @Override
-  public Book createBook(String name, Long categoryId, String[] authors, String isbn, Double price) {
-    Book book = new Book();
-    book.name = name;
-    book.isbn = isbn;
-    book.price = price;
-    book.category = categoryRepository.findOne(categoryId);
-    for (String authorName : authors) {
-      Author author = getOrCreateAuthor(authorName);
-      book.authors.add(author);
+    @Autowired
+    public BookHelperImpl(CategoryRepository categoryRepository,
+                          BookRepository bookRepository,
+                          AuthorsRepository authorsRepository
+    ) {
+        this.categoryRepository = categoryRepository;
+        this.bookRepository = bookRepository;
+        this.authorsRepository = authorsRepository;
     }
-    return bookRepository.save(book);
-  }
 
-
-  @Override
-  public Book updateBook(Long bookId, String name, String[] authors, String isbn) {
-    return null;
-  }
-
-  @Override
-  public Book updateBookPrice(Long bookId, Double price) {
-    return null;
-  }
-
-  @Override
-  public Book updateBookCategory(Long bookId, Long newCategoryId) {
-    return null;
-  }
-
-  @Override
-  public BookPicture addBookPicture(Long bookId, byte[] bytes, String contentType) throws SQLException {
-    BookPicture bookPicture = new BookPicture();
-    bookPicture.book = bookRepository.findOne(bookId);
-    FileEmbeddable picture = new FileEmbeddable();
-    picture.contentType = contentType;
-    picture.data = new SerialBlob(bytes);
-    picture.size = bytes.length;
-    picture.fileName = bookPicture.book.name;
-    bookPicture.picture = picture;
-    return bookPictureRepository.save(bookPicture);
-  }
-
-
-  private Author getOrCreateAuthor(String authorName) {
-    Author author = authorsRepository.findByNameAndLastName(authorName);
-    if (author == null) {
-      author = new Author();
-      author.nameAndLastName = authorName;
-      author = authorsRepository.save(author);
+    @Override
+    public List<Book> getBooksInCategory(Long categoryId) {
+        return bookRepository.findBooksByCategoryId(categoryId);
     }
-    return author;
-  }
+
+    @Override
+    public Book createBook(String name, Long categoryId, String[] authors, String isbn, Double price) {
+        Book book = new Book();
+        book.name = name;
+        book.isbn = isbn;
+        book.price = price;
+        book.category = categoryRepository.findOne(categoryId);
+        for (String authorName : authors) {
+            Author author = getOrCreateAuthor(authorName);
+            book.authors.add(author);
+        }
+        return bookRepository.save(book);
+    }
+
+
+    @Override
+    public Book updateBook(Long bookId, String name, String[] authors, String isbn) {
+        Book book = bookRepository.findOne(bookId);
+        book.name = name;
+        ArrayList<Author> authorsList = new ArrayList<>();
+        for (String author : authors) {
+            Author a = new Author(author);
+            authorsList.add(a);
+        }
+        authorsRepository.save(authorsList);
+        book.authors = authorsList;
+        book.isbn = isbn;
+
+        return bookRepository.save(book);
+    }
+
+    @Override
+    public Book updateBookPrice(Long bookId, Double price) {
+        Book book = bookRepository.findOne(bookId);
+        book.price = price;
+        return bookRepository.save(book);
+    }
+
+    @Override
+    public Book updateBookCategory(Long bookId, Long newCategoryId) {
+        Book book = bookRepository.findOne(bookId);
+        book.category.id = newCategoryId;
+        return bookRepository.save(book);
+    }
+
+    private Author getOrCreateAuthor(String authorName) {
+        Author author = authorsRepository.findByNameAndLastName(authorName);
+        if (author == null) {
+            author = new Author();
+            author.nameAndLastName = authorName;
+            author = authorsRepository.save(author);
+        }
+        return author;
+    }
 }
