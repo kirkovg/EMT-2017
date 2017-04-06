@@ -18,12 +18,5 @@ public class BookDetails extends BaseEntity {
     @Embedded
     public FileEmbeddable downloadFile;
 
-    public BookDetails() {
-    }
-
-    public BookDetails(String description, Book book) {
-        this.description = description;
-        this.book = book;
-    }
-
+    public BookDetails() {}
 }

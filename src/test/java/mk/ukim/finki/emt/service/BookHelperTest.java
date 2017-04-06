@@ -49,19 +49,6 @@ public class BookHelperTest {
         Assert.assertEquals(true, books.contains(book2));
     }
 
-    /*@Test
-    public void getBookDetails() {
-        Book book = bookServiceHelper.createBook("name", 1l, new String[]{AUTHOR_NAME}, "123", 300d);
-        BookDetails bookDetails = new BookDetails("detali za kniga", book);
-        bookDetailsRepository.save(bookDetails);
-
-        BookDetails details = bookServiceHelper.getBookDetails(book.id);
-        Assert.assertNotNull(details);
-        Assert.assertNotNull(details.id);
-        Assert.assertNotNull(details.description);
-        Assert.assertNotNull(details.book);
-    }*/
-
     @Test
     public void createBook() {
         Book book = bookServiceHelper.createBook("name", 1l, new String[]{AUTHOR_NAME}, "123", 300d);

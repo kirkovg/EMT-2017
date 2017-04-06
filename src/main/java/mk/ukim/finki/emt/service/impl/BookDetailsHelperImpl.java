@@ -13,9 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.SQLException;
 
-/**
- * Created by Aleksandar on 05.04.2017.
- */
+
 @Service
 public class BookDetailsHelperImpl implements BookDetailsServiceHelper {
 
@@ -32,6 +30,8 @@ public class BookDetailsHelperImpl implements BookDetailsServiceHelper {
         this.bookPictureRepository = bookPictureRepository;
         this.bookDetailsRepository = bookDetailsRepository;
     }
+
+
 
     @Override
     public BookDetails getBookDetails(Long bookId) {

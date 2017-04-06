@@ -16,4 +16,14 @@ public class FileEmbeddable {
   public String contentType;
 
   public int size;
+
+  @Override
+  public String toString() {
+    return "FileEmbeddable{" +
+            "data=" + data +
+            ", fileName='" + fileName + '\'' +
+            ", contentType='" + contentType + '\'' +
+            ", size=" + size +
+            '}';
+  }
 }
