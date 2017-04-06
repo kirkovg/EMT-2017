@@ -30,18 +30,12 @@ public class BookDetailsHelperTest {
     @Autowired
     BookDetailsRepository bookDetailsRepository;
 
-    @Autowired
-    BookPictureRepository bookPictureRepository;
 
     private static final String AUTHOR_NAME = "Gjorgji Kirkov";
 
     private static final byte[] bookDataBytes = new byte[]{(byte) 0xe0, 0x4f, (byte) 0xd0,
             0x20, (byte) 0xea, 0x3a, 0x69, 0x10, (byte) 0xa2, (byte) 0xd8, 0x08, 0x00, 0x2b,
             0x30, 0x30, (byte) 0x9d};
-
-    private static final byte[] pictureDataBytes = new byte[]{(byte) 0x80, 0x53, 0x1c,
-            (byte) 0x87, (byte) 0xa0, 0x42, 0x69, 0x10, (byte) 0xa2, (byte) 0xea, 0x08,
-            0x00, 0x2b, 0x30, 0x30, (byte) 0x9d};
 
     @Test
     public void getBookDetails() throws SQLException {
@@ -104,55 +98,4 @@ public class BookDetailsHelperTest {
                 new SerialBlob(newBookDetails.downloadFile.data)
         );
     }
-
-    @Test
-    public void addBookPicture() throws SQLException {
-        Book book = bookServiceHelper.createBook(
-                "name",
-                1l,
-                new String[]{AUTHOR_NAME},
-                "123",
-                300d
-        );
-
-        BookPicture bookPicture = new BookPicture();
-        bookPicture.book = book;
-        FileEmbeddable pic = new FileEmbeddable();
-        pic.fileName = book.name;
-        pic.contentType = "png";
-        pic.data = new SerialBlob(pictureDataBytes);
-        pic.size = pictureDataBytes.length;
-        bookPicture.picture = pic;
-
-        bookPictureRepository.save(bookPicture);
-
-        BookPicture foundBookPicture = bookPictureRepository.findByBookId(book.id);
-
-        Assert.assertNotNull(foundBookPicture.book);
-        Assert.assertNotNull(foundBookPicture.picture);
-
-        Assert.assertEquals("Picture name is not the same!",
-                pic.fileName,
-                foundBookPicture.picture.fileName
-        );
-
-        Assert.assertEquals("ContentType is not the same!",
-                pic.contentType,
-                foundBookPicture.picture.contentType
-        );
-
-        Assert.assertEquals("Picture size is not the same!",
-                pic.size,
-                foundBookPicture.picture.size
-        );
-
-        /**
-         * TODO: Find better solution instead casting to SerialBlob
-         */
-        Assert.assertEquals("Picture data is not the same!",
-                pic.data,
-                new SerialBlob(foundBookPicture.picture.data)
-        );
-    }
-
 }

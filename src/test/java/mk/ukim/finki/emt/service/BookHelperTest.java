@@ -1,7 +1,10 @@
 package mk.ukim.finki.emt.service;
 
 import mk.ukim.finki.emt.model.jpa.Book;
+import mk.ukim.finki.emt.model.jpa.BookPicture;
 import mk.ukim.finki.emt.model.jpa.Category;
+import mk.ukim.finki.emt.model.jpa.FileEmbeddable;
+import mk.ukim.finki.emt.persistence.BookPictureRepository;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -21,14 +26,20 @@ import java.util.List;
 @ActiveProfiles("test")
 public class BookHelperTest {
 
-    public static final String AUTHOR_NAME = "Gjorgji Kirkov";
-
     @Autowired
     CategoryServiceHelper categoryServiceHelper;
 
     @Autowired
     BookServiceHelper bookServiceHelper;
 
+    @Autowired
+    BookPictureRepository bookPictureRepository;
+
+    public static final String AUTHOR_NAME = "Gjorgji Kirkov";
+
+    private static final byte[] pictureDataBytes = new byte[]{(byte) 0x80, 0x53, 0x1c,
+            (byte) 0x87, (byte) 0xa0, 0x42, 0x69, 0x10, (byte) 0xa2, (byte) 0xea, 0x08,
+            0x00, 0x2b, 0x30, 0x30, (byte) 0x9d};
 
     @After
     public void clearTestEntities() {
@@ -86,6 +97,57 @@ public class BookHelperTest {
         Book bookUpdated = bookServiceHelper.updateBookCategory(book.id, category2.id);
 
         Assert.assertEquals(bookUpdated.category.id, category2.id);
+    }
+
+
+    @Test
+    public void addBookPicture() throws SQLException {
+        Book book = bookServiceHelper.createBook(
+                "name",
+                1l,
+                new String[]{AUTHOR_NAME},
+                "123",
+                300d
+        );
+
+        BookPicture bookPicture = new BookPicture();
+        bookPicture.book = book;
+        FileEmbeddable pic = new FileEmbeddable();
+        pic.fileName = book.name;
+        pic.contentType = "png";
+        pic.data = new SerialBlob(pictureDataBytes);
+        pic.size = pictureDataBytes.length;
+        bookPicture.picture = pic;
+
+        bookPictureRepository.save(bookPicture);
+
+        BookPicture foundBookPicture = bookPictureRepository.findByBookId(book.id);
+
+        Assert.assertNotNull(foundBookPicture.book);
+        Assert.assertNotNull(foundBookPicture.picture);
+
+        Assert.assertEquals("Picture name is not the same!",
+                pic.fileName,
+                foundBookPicture.picture.fileName
+        );
+
+        Assert.assertEquals("ContentType is not the same!",
+                pic.contentType,
+                foundBookPicture.picture.contentType
+        );
+
+        Assert.assertEquals("Picture size is not the same!",
+                pic.size,
+                foundBookPicture.picture.size
+        );
+
+        /**
+         * TODO: Find better solution instead casting to SerialBlob
+         */
+        Assert.assertEquals("Picture data is not the same!",
+                pic.data,
+                new SerialBlob(foundBookPicture.picture.data)
+        );
     }
 
 }

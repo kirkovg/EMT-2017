@@ -23,9 +23,6 @@ public class StoreManagementServiceImpl implements StoreManagementService {
   @Autowired
   private BookServiceHelper bookServiceHelper;
 
-  @Autowired
-  private BookDetailsServiceHelper bookDetailsServiceHelper;
-
   @Override
   public Category createTopLevelCategory(String name) {
     return categoryServiceHelper.createTopLevelCategory(name);
@@ -113,6 +110,6 @@ public class StoreManagementServiceImpl implements StoreManagementService {
 
   @Override
   public BookPicture addBookPicture(Long bookId, byte[] bytes, String contentType) throws SQLException {
-    return bookDetailsServiceHelper.addBookPicture(bookId, bytes, contentType);
+    return bookServiceHelper.addBookPicture(bookId, bytes, contentType);
   }
 }

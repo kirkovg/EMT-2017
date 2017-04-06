@@ -12,34 +12,38 @@ import java.util.List;
  */
 public interface BookServiceHelper {
 
-  List<Book> getBooksInCategory(Long categoryId);
+    List<Book> getBooksInCategory(Long categoryId);
 
-  Book createBook(
-    String name,
-    Long categoryId,
-    String[] authors,
-    String isbn,
-    Double price
-  );
+    Book createBook(
+            String name,
+            Long categoryId,
+            String[] authors,
+            String isbn,
+            Double price
+    );
 
-  Book updateBook(
-    Long bookId,
-    String name,
-    String[] authors,
-    String isbn
-  );
+    Book updateBook(
+            Long bookId,
+            String name,
+            String[] authors,
+            String isbn
+    );
 
-  Book updateBookPrice(
-    Long bookId,
-    Double price
-  );
+    Book updateBookPrice(
+            Long bookId,
+            Double price
+    );
 
-  Book updateBookCategory(
-    Long bookId,
-    Long newCategoryId
-  );
+    Book updateBookCategory(
+            Long bookId,
+            Long newCategoryId
+    );
 
-
+    BookPicture addBookPicture(
+            Long bookId,
+            byte[] bytes,
+            String contentType
+    ) throws SQLException;
 
 
 }

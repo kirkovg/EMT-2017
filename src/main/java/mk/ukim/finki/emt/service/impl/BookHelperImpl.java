@@ -23,16 +23,18 @@ public class BookHelperImpl implements BookServiceHelper {
     private CategoryRepository categoryRepository;
     private BookRepository bookRepository;
     private AuthorsRepository authorsRepository;
-
+    private BookPictureRepository bookPictureRepository;
 
     @Autowired
     public BookHelperImpl(CategoryRepository categoryRepository,
                           BookRepository bookRepository,
-                          AuthorsRepository authorsRepository
+                          AuthorsRepository authorsRepository,
+                          BookPictureRepository bookPictureRepository
     ) {
         this.categoryRepository = categoryRepository;
         this.bookRepository = bookRepository;
         this.authorsRepository = authorsRepository;
+        this.bookPictureRepository = bookPictureRepository;
     }
 
     @Override
@@ -93,5 +95,18 @@ public class BookHelperImpl implements BookServiceHelper {
             author = authorsRepository.save(author);
         }
         return author;
+    }
+
+    @Override
+    public BookPicture addBookPicture(Long bookId, byte[] bytes, String contentType) throws SQLException {
+        BookPicture bookPicture = new BookPicture();
+        bookPicture.book = bookRepository.findOne(bookId);
+        FileEmbeddable picture = new FileEmbeddable();
+        picture.contentType = contentType;
+        picture.data = new SerialBlob(bytes);
+        picture.size = bytes.length;
+        picture.fileName = bookPicture.book.name;
+        bookPicture.picture = picture;
+        return bookPictureRepository.save(bookPicture);
     }
 }

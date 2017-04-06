@@ -9,11 +9,5 @@ import java.sql.SQLException;
  * Created by Aleksandar on 05.04.2017.
  */
 public interface BookDetailsServiceHelper {
-
     BookDetails getBookDetails(Long bookId);
-
-    BookPicture addBookPicture(
-            Long bookId,
-            byte[] bytes,
-            String contentType) throws SQLException;
 }

@@ -28,7 +28,7 @@ public class StockHelperTest {
 
     @Test
     public void addBooksInStock() {
-
+        //Book book =
     }
 
     @Test

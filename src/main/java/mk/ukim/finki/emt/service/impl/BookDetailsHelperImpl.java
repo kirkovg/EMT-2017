@@ -37,20 +37,4 @@ public class BookDetailsHelperImpl implements BookDetailsServiceHelper {
     public BookDetails getBookDetails(Long bookId) {
         return bookDetailsRepository.findBookDetailsByBookId(bookId);
     }
-
-    @Override
-    public BookPicture addBookPicture(Long bookId, byte[] bytes, String contentType) throws SQLException {
-        BookPicture bookPicture = new BookPicture();
-        bookPicture.book = bookRepository.findOne(bookId);
-        FileEmbeddable picture = new FileEmbeddable();
-        picture.contentType = contentType;
-        picture.data = new SerialBlob(bytes);
-        picture.size = bytes.length;
-        picture.fileName = bookPicture.book.name;
-        bookPicture.picture = picture;
-        return bookPictureRepository.save(bookPicture);
-    }
-
-
-
 }
