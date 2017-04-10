@@ -7,11 +7,8 @@ import mk.ukim.finki.emt.service.StockServiceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * Created by Aleksandar on 06.04.2017.
- */
 @Service
-public class StockServiceHelperImpl implements StockServiceHelper{
+public class StockServiceHelperImpl implements StockServiceHelper {
     private BookRepository bookRepository;
 
     @Autowired
@@ -22,8 +19,13 @@ public class StockServiceHelperImpl implements StockServiceHelper{
     @Override
     public void addBooksInStock(Long bookId, int quantity) {
         Book book = bookRepository.findOne(bookId);
-        Integer previousQuantity = book.quantityInStock;
-        book.quantityInStock = previousQuantity + quantity;
+
+        if (book.quantityInStock == null) {
+            book.quantityInStock = quantity;
+        } else {
+            Integer previousQuantity = book.quantityInStock;
+            book.quantityInStock = previousQuantity + quantity;
+        }
         bookRepository.save(book);
     }
 
@@ -33,8 +35,9 @@ public class StockServiceHelperImpl implements StockServiceHelper{
         Integer previousQuantity = book.quantityInStock;
         if (previousQuantity < quantity) {
             throw new NotEnoughStockException();
+        } else {
+            book.quantityInStock = previousQuantity - quantity;
         }
-        book.quantityInStock = previousQuantity - quantity;
         bookRepository.save(book);
     }
 }

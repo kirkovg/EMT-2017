@@ -13,9 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Created by Aleksandar on 06.04.2017.
- */
+
 @Service
 public class StoreClientServiceImpl implements StoreClientService {
     @Autowired
@@ -63,8 +61,8 @@ public class StoreClientServiceImpl implements StoreClientService {
     }
 
     @Override
-    public void removeFromCart(Long cartId, Long bookId, int quantity) {
-
+    public CartItem removeFromCart(Long cartId, Long bookId, int quantity) {
+        return null;
     }
 
     @Override

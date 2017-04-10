@@ -17,20 +17,12 @@ import java.sql.SQLException;
 @Service
 public class BookDetailsHelperImpl implements BookDetailsServiceHelper {
 
-    private BookRepository bookRepository;
-    private BookPictureRepository bookPictureRepository;
     private BookDetailsRepository bookDetailsRepository;
 
-
     @Autowired
-    public BookDetailsHelperImpl(BookRepository bookRepository,
-                                 BookPictureRepository bookPictureRepository,
-                                 BookDetailsRepository bookDetailsRepository) {
-        this.bookRepository = bookRepository;
-        this.bookPictureRepository = bookPictureRepository;
+    public BookDetailsHelperImpl(BookDetailsRepository bookDetailsRepository) {
         this.bookDetailsRepository = bookDetailsRepository;
     }
-
 
 
     @Override

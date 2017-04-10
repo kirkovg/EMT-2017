@@ -23,11 +23,6 @@ public class CategoryFilter implements Filter {
         this.service = service;
     }
 
-
-
-
-
-
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 

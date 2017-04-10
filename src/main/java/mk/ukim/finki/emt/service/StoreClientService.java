@@ -27,7 +27,7 @@ public interface StoreClientService {
 
   CartItem addToCart(Long cartId, Long bookId, int quantity);
 
-  void removeFromCart(Long cartId, Long bookId, int quantity);
+  CartItem removeFromCart(Long cartId, Long bookId, int quantity);
 
   Checkout startCheckout(Long cartId);
 

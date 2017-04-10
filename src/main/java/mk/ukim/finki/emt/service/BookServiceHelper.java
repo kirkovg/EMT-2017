@@ -1,7 +1,6 @@
 package mk.ukim.finki.emt.service;
 
 import mk.ukim.finki.emt.model.jpa.Book;
-import mk.ukim.finki.emt.model.jpa.BookDetails;
 import mk.ukim.finki.emt.model.jpa.BookPicture;
 
 import java.sql.SQLException;

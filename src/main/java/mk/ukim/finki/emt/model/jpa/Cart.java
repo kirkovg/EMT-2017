@@ -18,7 +18,4 @@ public class Cart extends BaseEntity {
   public LocalDateTime expiryDate;
 
   public Double totalPrice;
-
-
-
 }
