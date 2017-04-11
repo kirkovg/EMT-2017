@@ -31,7 +31,6 @@ public interface StoreClientService {
 
   Checkout startCheckout(Long cartId);
 
-
   DeliveryInfo provideDeliveryInfo(
     Long checkoutId,
     String country,

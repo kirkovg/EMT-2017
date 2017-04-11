@@ -26,7 +26,6 @@ public class StockHelperTest {
 
     private static final String AUTHOR_NAME = "Gjorgji Kirkov";
 
-
     @After
     public void clearTestEntities() {
 

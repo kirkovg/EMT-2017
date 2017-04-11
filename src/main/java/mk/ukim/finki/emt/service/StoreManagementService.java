@@ -2,6 +2,7 @@ package mk.ukim.finki.emt.service;
 
 
 import mk.ukim.finki.emt.model.exceptions.CategoryInUseException;
+import mk.ukim.finki.emt.model.exceptions.NotEnoughStockException;
 import mk.ukim.finki.emt.model.jpa.Book;
 import mk.ukim.finki.emt.model.jpa.BookPicture;
 import mk.ukim.finki.emt.model.jpa.Category;
@@ -69,7 +70,7 @@ public interface StoreManagementService {
   void donateBooks(
     Long bookId,
     int quantity
-  );
+  ) throws NotEnoughStockException;
 
   void clearCart(
     Long cartId

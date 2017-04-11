@@ -24,9 +24,35 @@ public class BookDetailsHelperImpl implements BookDetailsServiceHelper {
         this.bookDetailsRepository = bookDetailsRepository;
     }
 
-
     @Override
     public BookDetails getBookDetails(Long bookId) {
         return bookDetailsRepository.findBookDetailsByBookId(bookId);
+    }
+
+
+    /**
+     *
+     *
+     * TODO: Implement all these
+     */
+
+    @Override
+    public BookDetails addBookDetails(Long bookId) {
+        return null;
+    }
+
+    @Override
+    public BookDetails uploadBookFile(Long bookId) {
+        return null;
+    }
+
+    @Override
+    public BookDetails removeBookFile(Long bookId) {
+        return null;
+    }
+
+    @Override
+    public BookDetails changeBookFile(Long bookId, byte[] content) {
+        return null;
     }
 }

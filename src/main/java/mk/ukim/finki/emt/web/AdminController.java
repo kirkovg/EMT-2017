@@ -24,58 +24,62 @@ import java.util.List;
 @Controller
 public class AdminController {
 
-  StoreManagementService storeManagementService;
+    StoreManagementService storeManagementService;
 
-  @Autowired
-  public AdminController(StoreManagementService storeManagementService) {
-    this.storeManagementService = storeManagementService;
-  }
+    @Autowired
+    public AdminController(StoreManagementService storeManagementService) {
+        this.storeManagementService = storeManagementService;
+    }
 
-  @RequestMapping(value = {"/admin/category"}, method = RequestMethod.GET)
-  public String addCategory(Model model) {
-    model.addAttribute("pageFragment", "addCategory");
-    return "index";
-  }
+    @RequestMapping(value = {"/admin/category"}, method = RequestMethod.GET)
+    public String addCategory(Model model) {
+        model.addAttribute("pageFragment", "addCategory");
+        return "index";
+    }
 
-  @RequestMapping(value = {"/admin/book"}, method = RequestMethod.GET)
-  public String addProduct(Model model) {
-    model.addAttribute("pageFragment", "addBook");
-    return "index";
-  }
-
-
-  @RequestMapping(value = {"/admin/category"}, method = RequestMethod.POST)
-  public String createCategory(Model model,
-                               @RequestParam String categoryName) {
-    Category category = storeManagementService.createTopLevelCategory(categoryName);
-    return "redirect:/admin/category";
-  }
+    @RequestMapping(value = {"/admin/book"}, method = RequestMethod.GET)
+    public String addProduct(Model model) {
+        model.addAttribute("pageFragment", "addBook");
+        return "index";
+    }
 
 
-  @RequestMapping(value = {"/admin/book"}, method = RequestMethod.POST)
-  public String createProduct(HttpServletRequest request,
-                              HttpServletResponse resp,
-                              Model model,
-                              @RequestParam String name,
-                              @RequestParam Long categoryId,
-                              @RequestParam String authors,
-                              @RequestParam String isbn,
-                              @RequestParam Double price,
-                              @RequestParam String description,
-                              MultipartFile picture) throws IOException, SQLException {
+    @RequestMapping(value = {"/admin/category"}, method = RequestMethod.POST)
+    public String createCategory(Model model,
+                                 @RequestParam String categoryName) {
+        Category category = storeManagementService.createTopLevelCategory(categoryName);
+        return "redirect:/admin/category";
+    }
 
-    Book product = storeManagementService.createBook(
-      name,
-      categoryId,
-      authors.split(";"),
-      isbn,
-      price
-    );
-    storeManagementService.addBookPicture(product.id, picture.getBytes(), picture.getContentType());
 
-    model.addAttribute("product", product);
-    return "index";
-  }
+    @RequestMapping(value = {"/admin/book"}, method = RequestMethod.POST)
+    public String createProduct(HttpServletRequest request,
+                                HttpServletResponse resp,
+                                Model model,
+                                @RequestParam String name,
+                                @RequestParam Long categoryId,
+                                @RequestParam String authors,
+                                @RequestParam String isbn,
+                                @RequestParam Double price,
+                                @RequestParam String description,
+                                MultipartFile picture) throws IOException, SQLException {
 
+        Book product = storeManagementService.createBook(
+                name,
+                categoryId,
+                authors.split(";"),
+                isbn,
+                price
+        );
+        storeManagementService.addBookPicture(product.id, picture.getBytes(), picture.getContentType());
+
+        model.addAttribute("product", product);
+        return "index";
+    }
+
+    @RequestMapping(value = {"/admin/addStock"}, method = RequestMethod.POST)
+    public void addStock(Model model, Integer quantity){
+
+    }
 
 }

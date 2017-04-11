@@ -53,7 +53,6 @@ public class BasicController {
 
   @RequestMapping(value = {"/search"}, method = RequestMethod.GET)
   public String search(
-    @PathVariable Long categoryId,
     @RequestParam String query,
     Model model
   ) {
@@ -80,5 +79,5 @@ public class BasicController {
     out.close();
   }
 
-
+  
 }
