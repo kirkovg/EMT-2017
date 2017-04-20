@@ -41,6 +41,10 @@ public class BookHelperTest {
             (byte) 0x87, (byte) 0xa0, 0x42, 0x69, 0x10, (byte) 0xa2, (byte) 0xea, 0x08,
             0x00, 0x2b, 0x30, 0x30, (byte) 0x9d};
 
+    private static final byte[] updatedPictureDataBytes = new byte[]{(byte) 0xe0, 0x4f, (byte) 0xd0,
+            0x20, (byte) 0xea, 0x3a, 0x69, 0x10, (byte) 0xa2, (byte) 0xd8, 0x08, 0x00, 0x2b,
+            0x30, 0x30, (byte) 0x9d};
+
     @After
     public void clearTestEntities() {
 
@@ -150,4 +154,54 @@ public class BookHelperTest {
         );
     }
 
+    @Test
+    public void updateBookPicture() throws SQLException {
+        Book book = bookServiceHelper.createBook(
+                "name",
+                1l,
+                new String[]{AUTHOR_NAME},
+                "123",
+                300d
+        );
+
+        bookServiceHelper.addBookPicture(
+                book.id,
+                pictureDataBytes,
+                "png"
+        );
+
+
+        BookPicture updatedPicture = bookServiceHelper.updateBookPicture(
+                book.id,
+                updatedPictureDataBytes,
+                "bnp"
+        );
+
+        Assert.assertNotNull(updatedPicture);
+        // casting both to SerialBlob because of incompatible types
+        // TODO: find better solution for this
+        Assert.assertEquals(new SerialBlob(updatedPictureDataBytes),new SerialBlob(updatedPicture.picture.data));
+        Assert.assertEquals("bnp",updatedPicture.picture.contentType);
+    }
+
+    @Test
+    public void removeBookPicture() throws SQLException {
+        Book book = bookServiceHelper.createBook(
+                "name",
+                1l,
+                new String[]{AUTHOR_NAME},
+                "123",
+                300d
+        );
+
+        bookServiceHelper.addBookPicture(
+                book.id,
+                pictureDataBytes,
+                "png"
+        );
+
+        bookServiceHelper.removeBookPicture(book.id);
+        BookPicture deleted = bookPictureRepository.findByBookId(book.id);
+        Assert.assertNull("Picture not deleted",deleted);
+    }
 }

@@ -44,5 +44,12 @@ public interface BookServiceHelper {
             String contentType
     ) throws SQLException;
 
+    BookPicture updateBookPicture(
+            Long bookId,
+            byte[] bytes,
+            String contentType
+    ) throws SQLException;
+
+    void removeBookPicture(Long bookId) throws SQLException;
 
 }
