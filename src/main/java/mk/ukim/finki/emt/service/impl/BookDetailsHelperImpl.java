@@ -1,10 +1,8 @@
 package mk.ukim.finki.emt.service.impl;
 
 import mk.ukim.finki.emt.model.jpa.BookDetails;
-import mk.ukim.finki.emt.model.jpa.BookPicture;
 import mk.ukim.finki.emt.model.jpa.FileEmbeddable;
 import mk.ukim.finki.emt.persistence.BookDetailsRepository;
-import mk.ukim.finki.emt.persistence.BookPictureRepository;
 import mk.ukim.finki.emt.persistence.BookRepository;
 import mk.ukim.finki.emt.service.BookDetailsServiceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +17,13 @@ public class BookDetailsHelperImpl implements BookDetailsServiceHelper {
 
     private BookDetailsRepository bookDetailsRepository;
 
+    private BookRepository bookRepository;
+
     @Autowired
-    public BookDetailsHelperImpl(BookDetailsRepository bookDetailsRepository) {
+    public BookDetailsHelperImpl(BookDetailsRepository bookDetailsRepository,
+                                 BookRepository bookRepository) {
         this.bookDetailsRepository = bookDetailsRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -29,30 +31,39 @@ public class BookDetailsHelperImpl implements BookDetailsServiceHelper {
         return bookDetailsRepository.findBookDetailsByBookId(bookId);
     }
 
-
-    /**
-     *
-     *
-     * TODO: Implement all these
-     */
-
     @Override
-    public BookDetails addBookDetails(Long bookId) {
-        return null;
+    public BookDetails addBookDetails(Long bookId, byte[] content, String contentType, String description) throws SQLException {
+        BookDetails bookDetails = new BookDetails();
+        bookDetails.book = bookRepository.findOne(bookId);
+        FileEmbeddable bookFile = new FileEmbeddable();
+        bookFile.data = new SerialBlob(content);
+        bookFile.contentType = contentType;
+        bookFile.fileName = bookDetails.book.name;
+        bookFile.size = content.length;
+        bookDetails.downloadFile = bookFile;
+        bookDetails.description = description;
+        return bookDetailsRepository.save(bookDetails);
+
     }
 
     @Override
-    public BookDetails uploadBookFile(Long bookId) {
-        return null;
+    public BookDetails updateBookDetails(Long bookId, byte[] content, String contentType, String description) throws SQLException {
+        BookDetails bookDetails = bookDetailsRepository.findBookDetailsByBookId(bookId);
+        bookDetails.book = bookRepository.findOne(bookId);
+        FileEmbeddable bookFile = new FileEmbeddable();
+        bookFile.data = new SerialBlob(content);
+        bookFile.contentType = contentType;
+        bookFile.fileName = bookDetails.book.name;
+        bookFile.size = content.length;
+        bookDetails.downloadFile = bookFile;
+        bookDetails.description = description;
+        return bookDetailsRepository.save(bookDetails);
     }
 
     @Override
-    public BookDetails removeBookFile(Long bookId) {
-        return null;
+    public void removeBookDetails(Long bookId) {
+        BookDetails bookDetails = bookDetailsRepository.findBookDetailsByBookId(bookId);
+        bookDetailsRepository.delete(bookDetails);
     }
 
-    @Override
-    public BookDetails changeBookFile(Long bookId, byte[] content) {
-        return null;
-    }
 }

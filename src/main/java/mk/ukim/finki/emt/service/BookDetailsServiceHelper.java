@@ -2,14 +2,14 @@ package mk.ukim.finki.emt.service;
 
 import mk.ukim.finki.emt.model.jpa.BookDetails;
 
+import java.sql.SQLException;
+
 public interface BookDetailsServiceHelper {
     BookDetails getBookDetails(Long bookId);
 
-    BookDetails addBookDetails(Long bookId);
+    BookDetails addBookDetails(Long bookId, byte[] content, String contentType, String description) throws SQLException;
 
-    BookDetails uploadBookFile(Long bookId);
+    BookDetails updateBookDetails(Long bookId, byte[] content, String contentType, String description) throws SQLException;
 
-    BookDetails removeBookFile(Long bookId);
-
-    BookDetails changeBookFile(Long bookId, byte[] content);
+    void removeBookDetails(Long bookId);
 }
