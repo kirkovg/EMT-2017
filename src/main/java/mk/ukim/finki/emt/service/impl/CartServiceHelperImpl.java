@@ -85,6 +85,12 @@ public class CartServiceHelperImpl implements CartServiceHelper {
         return cartItemRepository.save(cartItem);
     }
 
+
+    @Override
+    public List<CartItem> getAllFromCart(Long cartId){
+        return cartItemRepository.findCartItemsByCartId(cartId);
+    }
+
     @Override
     public void clearCart(Long cartId) {
         List<CartItem> cartItems = cartItemRepository.findCartItemsByCartId(cartId);

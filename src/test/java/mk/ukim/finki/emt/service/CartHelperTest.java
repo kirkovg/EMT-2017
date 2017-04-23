@@ -189,4 +189,41 @@ public class CartHelperTest {
         List<CartItem> items = cartItemRepository.findCartItemsByCartId(cart.id);
         Assert.assertEquals("There are still items in the cart!",0,items.size());
     }
+
+
+    @Test
+    public void getAllFromCart() {
+        Cart cart = cartServiceHelper.takeCart();
+        Book book1 = bookServiceHelper.createBook(
+                "book1",
+                0L,
+                new String[]{AUTHOR_NAME},
+                "123",
+                300d
+        );
+
+        Book book2 = bookServiceHelper.createBook(
+                "book2",
+                0L,
+                new String[]{AUTHOR_NAME},
+                "1234",
+                550d
+        );
+
+        CartItem cartItem = new CartItem();
+        cartItem.book = book1;
+        cartItem.cart = cart;
+        cartItem.quantity = 5;
+        cartItemRepository.save(cartItem);
+
+        CartItem cartItem2 = new CartItem();
+        cartItem2.book = book2;
+        cartItem2.cart = cart;
+        cartItem2.quantity = 8;
+        cartItemRepository.save(cartItem2);
+
+        List<CartItem> items = cartServiceHelper.getAllFromCart(cart.id);
+        System.out.println(items);
+        Assert.assertNotNull(items);
+    }
 }

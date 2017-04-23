@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<div xmlns:th="http://www.thymeleaf.org">
+    <h4 th:if="${exception!=null}" class="panel panel-danger" th:text="${exception}"></h4>
+
+    <div class="col-lg-4">
+        <form th:action="@{/admin/managePicture/{bookId}(bookId=${product.id})}"
+              enctype="multipart/form-data"
+              method="POST"
+              xmlns:th="http://www.thymeleaf.org" class="form-group">
+
+            <h2 th:text="${product.name}" class="lead"></h2>
+            <img class="img-responsive" th:src="@{/book/{id}/picture(id=${product.id})}" width="200" height="200"/>
+
+            <br/>
+            <br/>
+            <label>Upload the picture here: </label>
+            <input type="file" name="pictureForUpdate" required="required" class="form-control"/>
+            <br/>
+
+            <input type="submit" value="Update Picture" class="btn btn-primary"/>
+
+        </form>
+
+    </div>
+</div>

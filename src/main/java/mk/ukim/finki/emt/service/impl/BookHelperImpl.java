@@ -8,6 +8,7 @@ import mk.ukim.finki.emt.persistence.CategoryRepository;
 import mk.ukim.finki.emt.service.BookServiceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.ListUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.SQLException;
@@ -42,6 +43,15 @@ public class BookHelperImpl implements BookServiceHelper {
         return bookRepository.findBooksByCategoryId(categoryId);
     }
 
+
+    @Override
+    public Book getBook(Long bookId) {
+        return bookRepository.findOne(bookId);
+    }
+
+    /**
+     * TODO: Reimplement this with existing authors etc.
+     * */
     @Override
     public Book createBook(String name, Long categoryId, String[] authors, String isbn, Double price) {
         Book book = new Book();
@@ -58,16 +68,38 @@ public class BookHelperImpl implements BookServiceHelper {
 
 
     @Override
-    public Book updateBook(Long bookId, String name, String[] authors, String isbn) {
+    public Book updateBook(
+            Long bookId,
+            String name,
+            String[] authors,
+            String[] existingAuthors,
+            String isbn,
+            Boolean promoted
+    ) {
         Book book = bookRepository.findOne(bookId);
         book.name = name;
+        book.promoted = promoted;
         ArrayList<Author> authorsList = new ArrayList<>();
-        for (String author : authors) {
-            Author a = new Author(author);
-            authorsList.add(a);
+        ArrayList<Author> existingAuthorsList = new ArrayList<>();
+        ArrayList<Author> listToAdd = new ArrayList<>();
+        if (existingAuthors != null) {
+            for (String author : existingAuthors) {
+                Author a = authorsRepository.findByNameAndLastName(author);
+                existingAuthorsList.add(a);
+            }
         }
-        authorsRepository.save(authorsList);
-        book.authors = authorsList;
+        if (authors != null) {
+            for (String author : authors) {
+                Author a = new Author(author);
+                authorsList.add(a);
+                authorsRepository.save(a);
+            }
+        }
+
+        listToAdd.addAll(existingAuthorsList);
+        listToAdd.addAll(authorsList);
+
+        book.authors = listToAdd;
         book.isbn = isbn;
 
         return bookRepository.save(book);
@@ -83,7 +115,8 @@ public class BookHelperImpl implements BookServiceHelper {
     @Override
     public Book updateBookCategory(Long bookId, Long newCategoryId) {
         Book book = bookRepository.findOne(bookId);
-        book.category.id = newCategoryId;
+        Category newCategory = categoryRepository.findOne(newCategoryId);
+        book.category = newCategory;
         return bookRepository.save(book);
     }
 
@@ -113,7 +146,8 @@ public class BookHelperImpl implements BookServiceHelper {
     @Override
     public BookPicture updateBookPicture(Long bookId, byte[] bytes, String contentType) throws SQLException {
         BookPicture bookPicture = bookPictureRepository.findByBookId(bookId);
-        //bookPicture.book = bookRepository.findOne(bookId);
+        // this line intentionally so you can update even if there is no picture
+        bookPicture.book = bookRepository.findOne(bookId);
         FileEmbeddable picture = new FileEmbeddable();
         picture.contentType = contentType;
         picture.data = new SerialBlob(bytes);

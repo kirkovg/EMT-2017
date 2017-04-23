@@ -13,13 +13,22 @@ import javax.validation.constraints.NotNull;
 @Table(name = "cart_items")
 public class CartItem extends BaseEntity {
 
-  @NotNull
-  @Min(value = 1)
-  public int quantity;
+    @NotNull
+    @Min(value = 1)
+    public int quantity;
 
-  @ManyToOne
-  public Book book;
+    @ManyToOne
+    public Book book;
 
-  @ManyToOne
-  public Cart cart;
+    @ManyToOne
+    public Cart cart;
+
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                "quantity=" + quantity +
+                ", book=" + book +
+                ", cart=" + cart +
+                '}';
+    }
 }

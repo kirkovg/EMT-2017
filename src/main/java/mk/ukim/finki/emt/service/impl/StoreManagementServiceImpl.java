@@ -3,11 +3,13 @@ package mk.ukim.finki.emt.service.impl;
 import mk.ukim.finki.emt.model.exceptions.CategoryInUseException;
 import mk.ukim.finki.emt.model.exceptions.NotEnoughStockException;
 import mk.ukim.finki.emt.model.jpa.*;
+import mk.ukim.finki.emt.persistence.AuthorsRepository;
 import mk.ukim.finki.emt.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author Riste Stojanov
@@ -23,6 +25,15 @@ public class StoreManagementServiceImpl implements StoreManagementService {
 
     @Autowired
     private StockServiceHelper stockServiceHelper;
+
+    @Autowired
+    private CartServiceHelper cartServiceHelper;
+
+    @Autowired
+    private BookDetailsServiceHelper bookDetailsServiceHelper;
+
+    @Autowired
+    private AuthorsRepository authorsRepository;
 
     @Override
     public Category createTopLevelCategory(String name) {
@@ -55,8 +66,14 @@ public class StoreManagementServiceImpl implements StoreManagementService {
     }
 
     @Override
-    public Book updateBook(Long bookId, String name, String[] authors, String isbn) {
-        return bookServiceHelper.updateBook(bookId, name, authors, isbn);
+    public Book getBook(Long bookId) {
+        return bookServiceHelper.getBook(bookId);
+    }
+
+
+    @Override
+    public Book updateBook(Long bookId, String name, String[] authors,String[] existingAuthors, String isbn, Boolean promoted) {
+        return bookServiceHelper.updateBook(bookId, name, authors,existingAuthors, isbn, promoted);
     }
 
     @Override
@@ -81,7 +98,7 @@ public class StoreManagementServiceImpl implements StoreManagementService {
 
     @Override
     public void clearCart(Long cartId) {
-
+        cartServiceHelper.clearCart(cartId);
     }
 
     @Override
@@ -112,5 +129,35 @@ public class StoreManagementServiceImpl implements StoreManagementService {
     @Override
     public BookPicture addBookPicture(Long bookId, byte[] bytes, String contentType) throws SQLException {
         return bookServiceHelper.addBookPicture(bookId, bytes, contentType);
+    }
+
+    @Override
+    public BookPicture updateBookPicture(Long bookId, byte[] bytes, String contentType) throws SQLException {
+        return bookServiceHelper.updateBookPicture(bookId,bytes,contentType);
+    }
+
+    @Override
+    public void removeBookPicture(Long bookId) throws SQLException {
+        bookServiceHelper.removeBookPicture(bookId);
+    }
+
+    @Override
+    public BookDetails addBookDetails(Long bookId, byte[] content, String contentType, String description) throws SQLException {
+        return bookDetailsServiceHelper.addBookDetails(bookId,content,contentType,description);
+    }
+
+    @Override
+    public BookDetails updateBookDetails(Long bookId, byte[] content, String contentType, String description) throws SQLException {
+        return  bookDetailsServiceHelper.updateBookDetails(bookId,content,contentType,description);
+    }
+
+    @Override
+    public void removeBookDetails(Long bookId) {
+        bookDetailsServiceHelper.removeBookDetails(bookId);
+    }
+
+    @Override
+    public List<Author> getAllAuthors() {
+        return (List)authorsRepository.findAll();
     }
 }

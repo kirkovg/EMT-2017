@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <script>
     $(document).ready(function () {
-
+       $("#manage-products-list").hide();
+       $("#manage-products").click(function () {
+           $("#manage-products-list").toggle();
+       });
     });
 </script>
 <div class="navbar-default sidebar" role="navigation" xmlns:th="http://www.thymeleaf.org">
@@ -32,11 +35,12 @@
                 <a href="/admin/book">Add books</a>
             </li>
 
-            <li>
-                <a href="#stock">Stock</a>
-                <ul style="list-style: none;">
-                    <li><a href="/admin/addStock">Add Stock</a></li>
-                    <li><a href="/admin/donateStock">Donate Stock</a></li>
+            <li id="manage-products">
+               <a href="#" >Manage Products</a>
+                <ul style="list-style: none" id="manage-products-list">
+                    <li th:each="cat : ${categories}" >
+                        <a th:href="@{/admin/manageProducts/{categoryId}(categoryId=${cat.id})}" th:text="${cat.name}"></a>
+                    </li>
                 </ul>
             </li>
 

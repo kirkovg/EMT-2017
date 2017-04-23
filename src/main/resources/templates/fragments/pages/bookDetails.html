@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<div xmlns:th="http://www.thymeleaf.org">
+    <h4 th:if="${exception!=null}" class="panel panel-danger" th:text="${exception}"></h4>
+
+    <div class="row">
+        <div class="col-lg-4">
+
+            <h2 th:text="${product.name}" class="lead"></h2>
+
+            <img class="img img-responsive" th:src="@{/book/{id}/picture(id=${product.id})}" width="200" height="200"/>
+            <br/>
+            <label>Description: </label><br/>
+            <span th:text="${details.description}"></span> <br/>
+            <label>Price: </label> <span th:text="${product.price}"></span> <br/>
+            <label>ISBN: </label> <span th:text="${product.isbn}"> </span> <br/>
+            <label>Category: </label> <span th:text="${product.category.name}"></span><br/>
+            <label>Promoted: </label>
+            <span th:text="${product.promoted} ? 'Yes' : 'No'"></span>
+            <br/>
+            <label>Status: </label>
+            <span th:text="${product.quantityInStock} ? 'In Stock' : 'Not in stock'"></span>
+            <br/>
+            <label>Authors: </label>
+            <ul th:each="author : ${product.authors}">
+                <li th:text="${author.nameAndLastName}"></li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -2,12 +2,11 @@ package mk.ukim.finki.emt.service.impl;
 
 import com.sun.corba.se.pept.transport.*;
 import com.sun.corba.se.pept.transport.ContactInfo;
+import mk.ukim.finki.emt.model.exceptions.NotEnoughItemQuantityException;
+import mk.ukim.finki.emt.model.exceptions.NotEnoughStockException;
 import mk.ukim.finki.emt.model.jpa.*;
 import mk.ukim.finki.emt.model.search.BookSearchCriteria;
-import mk.ukim.finki.emt.service.BookDetailsServiceHelper;
-import mk.ukim.finki.emt.service.BookServiceHelper;
-import mk.ukim.finki.emt.service.CategoryServiceHelper;
-import mk.ukim.finki.emt.service.StoreClientService;
+import mk.ukim.finki.emt.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +24,12 @@ public class StoreClientServiceImpl implements StoreClientService {
     @Autowired
     private BookDetailsServiceHelper bookDetailsServiceHelper;
 
+    @Autowired
+    private CartServiceHelper cartServiceHelper;
+
     @Override
     public Cart takeCart() {
-        return null;
+        return cartServiceHelper.takeCart();
     }
 
     @Override
@@ -57,12 +59,17 @@ public class StoreClientServiceImpl implements StoreClientService {
 
     @Override
     public CartItem addToCart(Long cartId, Long bookId, int quantity) {
-        return null;
+        return cartServiceHelper.addToCart(cartId, bookId, quantity);
     }
 
     @Override
-    public CartItem removeFromCart(Long cartId, Long bookId, int quantity) {
-        return null;
+    public CartItem removeFromCart(Long cartId, Long bookId, int quantity) throws NotEnoughStockException, NotEnoughItemQuantityException {
+        return cartServiceHelper.removeFromCart(cartId, bookId, quantity);
+    }
+
+    @Override
+    public List<CartItem> getAllFromCart(Long cartId) {
+        return cartServiceHelper.getAllFromCart(cartId);
     }
 
     @Override

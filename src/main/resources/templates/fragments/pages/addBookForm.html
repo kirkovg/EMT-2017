@@ -14,7 +14,13 @@
     <br/>
     <label>ISBN: </label> <input type="text" name="isbn" class="form-control"/><br/>
     <label>Price: </label> <input type="text" name="price" class="form-control"/><br/>
-    <label>Authors: </label> <input type="text" name="authors" class="form-control"/><br/>
+    <label>Existing authors: </label>
+    <select id="existingAuthors" name="existingAuthors" class="btn btn-default" multiple="multiple">
+        <option th:each="a : ${existingAuthors}" th:text="${a.nameAndLastName}"></option>
+    </select>
+    <br/>
+    <label>New Authors: </label> <input type="text" name="authors" class="form-control"/><br/>
     <label>Picture (png): </label><input type="file" name="picture" class="form-control"/><br/>
+    <label>Book file: </label><input type="file" name="bookFile" class="form-control"/>
     <input type="submit" class="btn btn-primary"/>
 </form>

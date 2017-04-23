@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<div xmlns:th="http://www.thymeleaf.org">
+
+
+    <h4 th:if="${exception!=null}" class="panel panel-danger" th:text="${exception}"></h4>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <h2 th:text="${product.name}" class="lead"></h2>
+            <br/>
+            <img class="img-responsive" th:src="@{/book/{id}/picture(id=${product.id})}" width="200" height="200"/>
+            <br/>
+            <label>Status: </label>
+            <span th:text="${product.quantityInStock} ? 'In Stock' : 'Not in stock'"></span>
+            <br/>
+            <label>Quantity: </label>
+            <span th:text="${product.quantityInStock} ? ${product.quantityInStock} : '0'"></span>
+        </div>
+
+        <div class="col-lg-4 col-lg-offset-2" style="margin-top:45px;">
+            <form th:action="@{/admin/manageStock/{bookId}(bookId=${product.id})}" th:method="POST" class="form-group">
+                <label>Add Stock</label>
+                <input type="number" name="addedStock" class="form-control" min="0" required="required"/>
+                <label>Donate Stock</label>
+                <input type="number" name="donatedStock" class="form-control" min="0" required="required"/>
+                <br/>
+                <input type="submit" class="btn btn-success" value="Update stock"/>
+            </form>
+        </div>
+
+    </div>
+</div>

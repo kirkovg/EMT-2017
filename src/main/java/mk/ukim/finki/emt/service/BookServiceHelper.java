@@ -21,11 +21,15 @@ public interface BookServiceHelper {
             Double price
     );
 
+    Book getBook(Long bookId);
+
     Book updateBook(
             Long bookId,
             String name,
             String[] authors,
-            String isbn
+            String[] existingAuthors,
+            String isbn,
+            Boolean promoted
     );
 
     Book updateBookPrice(

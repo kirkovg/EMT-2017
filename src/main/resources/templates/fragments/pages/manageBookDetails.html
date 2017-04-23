@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<div xmlns:th="http://www.thymeleaf.org">
+    <h4 th:if="${exception!=null}" class="panel panel-danger" th:text="${exception}"></h4>
+
+
+    <div class="row">
+        <form th:action="@{/admin/manageBookDetails/{bookId}(bookId=${product.id})}"
+              method="POST"
+              enctype="multipart/form-data"
+              xmlns:th="http://www.thymeleaf.org"
+              class="form-group col-lg-4">
+
+            <h2 th:text="${product.name}" class="lead"></h2>
+
+            <img class="img img-responsive" th:src="@{/book/{id}/picture(id=${product.id})}" width="200" height="200"/>
+            <br/>
+            <label>Change name:</label>
+            <input type="text" name="name" class="form-control" th:value="${product.name}" required="required"/>
+            <br/>
+            <label>Change Description:</label>
+            <input type="text" name="description" class="form-control" th:value="${details.description}" required="required"/>
+            <br/>
+            <label>Change Price: </label>
+            <input type="text" name="price" class="form-control" th:value="${product.price}" required="required"/>
+            <br/>
+            <label>Change ISBN: </label>
+            <input type="text" name="isbn" class="form-control" th:value="${product.isbn}" required="required"/>
+            <br/>
+            <label>Existing Category: </label> <span th:text="${product.category.name}"></span><br/>
+            <label>Choose new category: </label>
+            <select name="categoryId" class="btn btn-default">
+                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+            </select>
+            <br/>
+            <label>Promoted: </label>
+            <span th:text="${product.promoted} ? 'Yes' : 'No'"></span>
+            <br/>
+            <label>Change Promotion: </label>
+            <select name="promoted" class="btn btn-default">
+                <option>Yes</option>
+                <option>No</option>
+            </select>
+            <br/>
+            <label>Book Authors: </label>
+            <ul th:each="author : ${product.authors}">
+                <li th:text="${author.nameAndLastName}"></li>
+            </ul>
+            <br/>
+            <label>Add Existing authors: </label>
+            <select id="existingAuthors" name="existingAuthors" class="btn btn-default" multiple="multiple" required="required">
+                <option th:each="a : ${existingAuthors}" th:text="${a.nameAndLastName}"></option>
+            </select>
+            <label>Add new authors: </label>
+            <input type="text" name="authors" class="form-control"/>
+            <br/>
+
+            <label>Existing Book file: </label><br/>
+            Size: <span th:text="${details.downloadFile.size}"> </span>&nbsp;Bytes
+            <br/>
+            Content Type: <span th:text="${details.downloadFile.contentType}"></span>
+            <br/>
+            <br/>
+            <label>Update Book file: </label>
+            <input type="file" name="bookFile" class="form-control"/>
+            <br/>
+            <input type="submit" class="btn btn-primary" value="Update Details"/>
+        </form>
+    </div>
+
+</div>

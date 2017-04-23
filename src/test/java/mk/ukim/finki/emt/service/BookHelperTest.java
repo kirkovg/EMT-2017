@@ -74,11 +74,14 @@ public class BookHelperTest {
     }
 
 
+    /**
+     * TODO: Reimplement this test
+     */
     @Test
     public void updateBook() {
         Book bookFirst = bookServiceHelper.createBook("C#", 1L, new String[]{"Riste Stojanov"}, "1234", 300d);
 
-        Book book = bookServiceHelper.updateBook(bookFirst.id, "Java", new String[]{AUTHOR_NAME}, "123");
+        Book book = bookServiceHelper.updateBook(bookFirst.id, "Java", new String[]{AUTHOR_NAME},null, "123",false);
         Assert.assertEquals("Book name is not equal!", book.name, "Java");
         Assert.assertEquals("Authors not equal!", book.authors.get(0).nameAndLastName, AUTHOR_NAME);
         Assert.assertEquals("Isbn not equal!", book.isbn, "123");

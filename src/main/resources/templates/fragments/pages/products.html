@@ -4,16 +4,23 @@
 
     <h1>Products:</h1>
 
-    <div th:each="prod : ${products}" class="row">
+    <div th:each="prod : ${products}" class="row" style="margin-top: 20px;">
         <div class="col-md-4">
-            <img class="img-responsive" th:src="@{/book/{id}/picture(id=${prod.id})}"></img>
+            <img class="img img-responsive" th:src="@{/book/{id}/picture(id=${prod.id})}" width="150" height="150"/>
         </div>
         <div class="col-md-8">
+            <label>Name:</label>
             <div th:text="${prod.name}"></div>
+            <label>ISBN:</label>
             <div th:text="${prod.isbn}"></div>
+            <label>Category:</label>
             <a th:href="@{/category/{categoryId}(categoryId=${prod.category.id})}"
                th:text="${prod.category.name}">
             </a>
+            <br/>
+            <label><a th:href="@{/bookDetails/{bookId}(bookId=${prod.id})}">Details</a></label>
+            <br/>
+            <button class="btn btn-success">Add to cart <span class="fa fa-shopping-cart"></span></button>
         </div>
     </div>
 </div>
