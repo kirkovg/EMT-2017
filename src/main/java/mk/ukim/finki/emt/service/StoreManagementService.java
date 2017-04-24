@@ -37,6 +37,23 @@ public interface StoreManagementService {
     Book createBook(
             String name,
             Long categoryId,
+            String[] newAuthors,
+            Long[] existingAuthors,
+            String isbn,
+            Double price
+    );
+
+    Book createBook(
+            String name,
+            Long categoryId,
+            Long[] existingAuthors,
+            String isbn,
+            Double price
+    );
+
+    Book createBook(
+            String name,
+            Long categoryId,
             String[] authors,
             String isbn,
             Double price
@@ -62,6 +79,8 @@ public interface StoreManagementService {
             Long bookId,
             Long newCategoryId
     );
+
+    void removeBook(Long bookId);
 
 
     void addBooksInStock(

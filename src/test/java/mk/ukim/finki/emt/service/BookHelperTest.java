@@ -54,8 +54,8 @@ public class BookHelperTest {
     public void getBooksInCategory() {
         Category category = categoryServiceHelper.createTopLevelCategory("kategorija");
 
-        Book book1 = bookServiceHelper.createBook("book1", category.id, new String[]{AUTHOR_NAME}, "123", 300d);
-        Book book2 = bookServiceHelper.createBook("book2", category.id, new String[]{AUTHOR_NAME}, "1234", 300d);
+        Book book1 = bookServiceHelper.createBook("book1", category.id, new String[]{AUTHOR_NAME},null, "123", 300d);
+        Book book2 = bookServiceHelper.createBook("book2", category.id, new String[]{AUTHOR_NAME},null, "1234", 300d);
 
         List<Book> books = bookServiceHelper.getBooksInCategory(category.id);
         Assert.assertNotNull(books);
@@ -66,7 +66,7 @@ public class BookHelperTest {
 
     @Test
     public void createBook() {
-        Book book = bookServiceHelper.createBook("name", 1l, new String[]{AUTHOR_NAME}, "123", 300d);
+        Book book = bookServiceHelper.createBook("name", 1l, new String[]{AUTHOR_NAME},null, "123", 300d);
         Assert.assertNotNull(book);
         Assert.assertNotNull(book.id);
         Assert.assertEquals(1, book.authors.size());
@@ -79,7 +79,7 @@ public class BookHelperTest {
      */
     @Test
     public void updateBook() {
-        Book bookFirst = bookServiceHelper.createBook("C#", 1L, new String[]{"Riste Stojanov"}, "1234", 300d);
+        Book bookFirst = bookServiceHelper.createBook("C#", 1L, new String[]{"Riste Stojanov"},null, "1234", 300d);
 
         Book book = bookServiceHelper.updateBook(bookFirst.id, "Java", new String[]{AUTHOR_NAME},null, "123",false);
         Assert.assertEquals("Book name is not equal!", book.name, "Java");
@@ -89,7 +89,7 @@ public class BookHelperTest {
 
     @Test
     public void updateBookPrice() {
-        Book book = bookServiceHelper.createBook("C#", 1L, new String[]{AUTHOR_NAME}, "1234", 300d);
+        Book book = bookServiceHelper.createBook("C#", 1L, new String[]{AUTHOR_NAME},null, "1234", 300d);
         Book bookUpdated = bookServiceHelper.updateBookPrice(book.id, 500d);
 
         Assert.assertEquals(bookUpdated.price, 500d, 0);
@@ -98,7 +98,7 @@ public class BookHelperTest {
     @Test
     public void updateBookCategory() {
         Category category1 = categoryServiceHelper.createTopLevelCategory("thriller");
-        Book book = bookServiceHelper.createBook("C#", category1.id, new String[]{AUTHOR_NAME}, "1234", 300d);
+        Book book = bookServiceHelper.createBook("C#", category1.id, new String[]{AUTHOR_NAME},null, "1234", 300d);
 
         Category category2 = categoryServiceHelper.createTopLevelCategory("fantasy");
         Book bookUpdated = bookServiceHelper.updateBookCategory(book.id, category2.id);
@@ -113,6 +113,7 @@ public class BookHelperTest {
                 "name",
                 1l,
                 new String[]{AUTHOR_NAME},
+                null,
                 "123",
                 300d
         );
@@ -163,6 +164,7 @@ public class BookHelperTest {
                 "name",
                 1l,
                 new String[]{AUTHOR_NAME},
+                null,
                 "123",
                 300d
         );
@@ -193,6 +195,7 @@ public class BookHelperTest {
                 "name",
                 1l,
                 new String[]{AUTHOR_NAME},
+                null,
                 "123",
                 300d
         );

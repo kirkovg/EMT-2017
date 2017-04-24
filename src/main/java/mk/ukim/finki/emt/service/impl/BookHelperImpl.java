@@ -49,20 +49,33 @@ public class BookHelperImpl implements BookServiceHelper {
         return bookRepository.findOne(bookId);
     }
 
-    /**
-     * TODO: Reimplement this with existing authors etc.
-     * */
+
     @Override
-    public Book createBook(String name, Long categoryId, String[] authors, String isbn, Double price) {
-        Book book = new Book();
-        book.name = name;
-        book.isbn = isbn;
-        book.price = price;
-        book.category = categoryRepository.findOne(categoryId);
+    public Book createBook(String name, Long categoryId, String[] authors, Long[] existingAuthors, String isbn, Double price) {
+        Book book = createBookWithExistingAuthors(name, categoryId, existingAuthors, isbn, price);
         for (String authorName : authors) {
-            Author author = getOrCreateAuthor(authorName);
+            Author author = createAuthor(authorName);
             book.authors.add(author);
         }
+
+        return bookRepository.save(book);
+    }
+
+    @Override
+    public Book createBook(String name,Long categoryId,Long[] existingAuthors, String isbn, Double price) {
+        Book book = createBookWithExistingAuthors(name, categoryId, existingAuthors, isbn, price);
+        return bookRepository.save(book);
+    }
+
+    @Override
+    public Book createBook(
+            String name,
+            Long categoryId,
+            String[] authors,
+            String isbn,
+            Double price
+    ) {
+        Book book = createBookWithNewAuthors(name, categoryId, authors, isbn, price);
         return bookRepository.save(book);
     }
 
@@ -120,14 +133,10 @@ public class BookHelperImpl implements BookServiceHelper {
         return bookRepository.save(book);
     }
 
-    private Author getOrCreateAuthor(String authorName) {
-        Author author = authorsRepository.findByNameAndLastName(authorName);
-        if (author == null) {
-            author = new Author();
-            author.nameAndLastName = authorName;
-            author = authorsRepository.save(author);
-        }
-        return author;
+    @Override
+    public void removeBook(Long bookId) {
+        Book book = bookRepository.findOne(bookId);
+        bookRepository.delete(book);
     }
 
     @Override
@@ -163,5 +172,37 @@ public class BookHelperImpl implements BookServiceHelper {
         bookPictureRepository.delete(bookPicture);
     }
 
+    private Author createAuthor(String authorName) {
+        Author author = new Author();
+        author.nameAndLastName = authorName;
+        author = authorsRepository.save(author);
+        return author;
+    }
+
+
+    private Book createBookWithNewAuthors(String name, Long categoryId, String[] authors, String isbn, Double price) {
+        Book book = new Book();
+        book.name = name;
+        book.isbn = isbn;
+        book.price = price;
+        book.category = categoryRepository.findOne(categoryId);
+        for (String authorName : authors) {
+            Author author = createAuthor(authorName);
+            book.authors.add(author);
+        }
+        return book;
+    }
+
+    private Book createBookWithExistingAuthors(String name, Long categoryId, Long[] authorIds, String isbn, Double price) {
+        Book book = new Book();
+        book.name = name;
+        book.isbn = isbn;
+        book.price = price;
+        book.category = categoryRepository.findOne(categoryId);
+        for (Long a : authorIds) {
+            book.authors.add(authorsRepository.findOne(a));
+        }
+        return book;
+    }
 
 }

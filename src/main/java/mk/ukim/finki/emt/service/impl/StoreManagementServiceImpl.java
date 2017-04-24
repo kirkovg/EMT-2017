@@ -61,9 +61,21 @@ public class StoreManagementServiceImpl implements StoreManagementService {
     }
 
     @Override
-    public Book createBook(String name, Long categoryId, String[] authors, String isbn, Double price) {
-        return bookServiceHelper.createBook(name, categoryId, authors, isbn, price);
+    public Book createBook(String name, Long categoryId, String[] newAuthors,
+                           Long[] existingAuthors, String isbn, Double price) {
+        return bookServiceHelper.createBook(name, categoryId, newAuthors, existingAuthors, isbn, price);
     }
+
+    @Override
+    public Book createBook(String name, Long categoryId, Long[] existingAuthors, String isbn, Double price) {
+        return bookServiceHelper.createBook(name,categoryId,existingAuthors,isbn,price);
+    }
+
+    @Override
+    public Book createBook(String name, Long categoryId, String[] authors, String isbn, Double price) {
+        return bookServiceHelper.createBook(name,categoryId,authors,isbn,price);
+    }
+
 
     @Override
     public Book getBook(Long bookId) {
@@ -72,8 +84,8 @@ public class StoreManagementServiceImpl implements StoreManagementService {
 
 
     @Override
-    public Book updateBook(Long bookId, String name, String[] authors,String[] existingAuthors, String isbn, Boolean promoted) {
-        return bookServiceHelper.updateBook(bookId, name, authors,existingAuthors, isbn, promoted);
+    public Book updateBook(Long bookId, String name, String[] authors, String[] existingAuthors, String isbn, Boolean promoted) {
+        return bookServiceHelper.updateBook(bookId, name, authors, existingAuthors, isbn, promoted);
     }
 
     @Override
@@ -81,9 +93,15 @@ public class StoreManagementServiceImpl implements StoreManagementService {
         return bookServiceHelper.updateBookPrice(bookId, price);
     }
 
+
     @Override
     public Book updateBookCategory(Long bookId, Long newCategoryId) {
         return bookServiceHelper.updateBookCategory(bookId, newCategoryId);
+    }
+
+    @Override
+    public void removeBook(Long bookId) {
+        bookServiceHelper.removeBook(bookId);
     }
 
     @Override
@@ -133,7 +151,7 @@ public class StoreManagementServiceImpl implements StoreManagementService {
 
     @Override
     public BookPicture updateBookPicture(Long bookId, byte[] bytes, String contentType) throws SQLException {
-        return bookServiceHelper.updateBookPicture(bookId,bytes,contentType);
+        return bookServiceHelper.updateBookPicture(bookId, bytes, contentType);
     }
 
     @Override
@@ -143,12 +161,12 @@ public class StoreManagementServiceImpl implements StoreManagementService {
 
     @Override
     public BookDetails addBookDetails(Long bookId, byte[] content, String contentType, String description) throws SQLException {
-        return bookDetailsServiceHelper.addBookDetails(bookId,content,contentType,description);
+        return bookDetailsServiceHelper.addBookDetails(bookId, content, contentType, description);
     }
 
     @Override
     public BookDetails updateBookDetails(Long bookId, byte[] content, String contentType, String description) throws SQLException {
-        return  bookDetailsServiceHelper.updateBookDetails(bookId,content,contentType,description);
+        return bookDetailsServiceHelper.updateBookDetails(bookId, content, contentType, description);
     }
 
     @Override
@@ -158,6 +176,6 @@ public class StoreManagementServiceImpl implements StoreManagementService {
 
     @Override
     public List<Author> getAllAuthors() {
-        return (List)authorsRepository.findAll();
+        return (List) authorsRepository.findAll();
     }
 }

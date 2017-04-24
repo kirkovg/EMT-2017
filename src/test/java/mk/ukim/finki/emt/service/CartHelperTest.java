@@ -59,6 +59,7 @@ public class CartHelperTest {
                 "book1",
                 0L,
                 new String[]{AUTHOR_NAME},
+                null,
                 "123",
                 300d
         );
@@ -84,6 +85,7 @@ public class CartHelperTest {
                 "book1",
                 0L,
                 new String[]{AUTHOR_NAME},
+                null,
                 "123",
                 300d
         );
@@ -113,6 +115,7 @@ public class CartHelperTest {
                 "book1",
                 0L,
                 new String[]{AUTHOR_NAME},
+                null,
                 "123",
                 300d
         );
@@ -143,6 +146,7 @@ public class CartHelperTest {
                 "book1",
                 0L,
                 new String[]{AUTHOR_NAME},
+                null,
                 "123",
                 300d
         );
@@ -172,6 +176,7 @@ public class CartHelperTest {
                 "book1",
                 0L,
                 new String[]{AUTHOR_NAME},
+                null,
                 "123",
                 300d
         );
@@ -198,6 +203,7 @@ public class CartHelperTest {
                 "book1",
                 0L,
                 new String[]{AUTHOR_NAME},
+                null,
                 "123",
                 300d
         );
@@ -206,6 +212,7 @@ public class CartHelperTest {
                 "book2",
                 0L,
                 new String[]{AUTHOR_NAME},
+                null,
                 "1234",
                 550d
         );

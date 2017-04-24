@@ -47,6 +47,7 @@ public class BookDetailsHelperTest {
                 "name",
                 1l,
                 new String[]{AUTHOR_NAME},
+                null,
                 "123",
                 300d
         );
@@ -109,6 +110,7 @@ public class BookDetailsHelperTest {
                 "name",
                 1l,
                 new String[]{AUTHOR_NAME},
+                null,
                 "123",
                 300d
         );
@@ -133,6 +135,7 @@ public class BookDetailsHelperTest {
                 "name",
                 1l,
                 new String[]{AUTHOR_NAME},
+                null,
                 "123",
                 300d
         );
@@ -167,6 +170,7 @@ public class BookDetailsHelperTest {
                 "name",
                 1l,
                 new String[]{AUTHOR_NAME},
+                null,
                 "123",
                 300d
         );

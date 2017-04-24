@@ -4,7 +4,8 @@
 
     <h1>Products:</h1>
 
-    <div th:each="prod : ${products}" class="row" style="margin-top: 20px;">
+    <div th:each="prod : ${products}" class="row" style="margin-top: 10px;">
+        <hr/>
         <div class="col-md-4">
             <img class="img img-responsive" th:src="@{/book/{id}/picture(id=${prod.id})}" width="150" height="150"/>
         </div>

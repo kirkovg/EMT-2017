@@ -4,7 +4,8 @@
 
     <h1>Products:</h1>
 
-    <div th:each="prod : ${products}" class="row" style="margin-top: 30px;">
+    <div th:each="prod : ${products}" class="row" style="margin-top: 10px;">
+        <hr/>
         <div class="col-md-3">
             <img class="img img-responsive" th:src="@{/book/{id}/picture(id=${prod.id})}" width="100" height="100"/>
         </div>
@@ -29,11 +30,10 @@
             </div>
         </div>
 
-        <!--IMPLEMENT THIS-->
-        <div class="col-md-3">
-            <button class="btn btn-danger">Remove Product <span class="fa fa-remove"></span></button>
-        </div>
+        <form class="col-md-3" method="POST" xmlns:th="http://www.thymeleaf.org"
+              th:action="@{/admin/manageProducts/{categoryId}/deleteProduct/{bookId}(categoryId=${prod.category.id},bookId=${prod.id})}">
+            <input type="submit" class="btn btn-danger" value="Remove Product"/>
+        </form>
 
-        <hr/>
     </div>
 </div>

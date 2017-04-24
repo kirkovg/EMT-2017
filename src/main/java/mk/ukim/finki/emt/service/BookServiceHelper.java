@@ -21,6 +21,22 @@ public interface BookServiceHelper {
             Double price
     );
 
+    Book createBook(
+            String name,
+            Long categoryId,
+            Long[] existingAuthors,
+            String isbn,
+            Double price
+    );
+
+    Book createBook(
+            String name,
+            Long categoryId,
+            String[] authors,
+            Long[] existingAuthors, String isbn,
+            Double price
+    );
+
     Book getBook(Long bookId);
 
     Book updateBook(
@@ -41,6 +57,8 @@ public interface BookServiceHelper {
             Long bookId,
             Long newCategoryId
     );
+
+    void removeBook(Long bookId);
 
     BookPicture addBookPicture(
             Long bookId,

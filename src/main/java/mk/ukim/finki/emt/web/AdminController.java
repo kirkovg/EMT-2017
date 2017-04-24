@@ -67,6 +67,21 @@ public class AdminController {
         return "index";
     }
 
+    @RequestMapping(
+            value = {"/admin/manageProducts/{categoryId}/deleteProduct/{bookId}"},
+            method = RequestMethod.POST
+    )
+    public String deleteProduct(
+            @PathVariable Long categoryId,
+            @PathVariable Long bookId
+    ) throws SQLException {
+        storeManagementService.removeBookDetails(bookId);
+        storeManagementService.removeBookPicture(bookId);
+        storeManagementService.removeBook(bookId);
+
+        return "redirect:/admin/manageProducts/{categoryId}";
+    }
+
     @RequestMapping(value = {"/admin/manageBookDetails/{bookId}"}, method = RequestMethod.GET)
     public String manageBookDetails(
             Model model,
@@ -217,8 +232,8 @@ public class AdminController {
             Model model,
             @RequestParam String name,
             @RequestParam Long categoryId,
-            @RequestParam String[] existingAuthors,
-            @RequestParam String authors,
+            @RequestParam(required = false) String authors,
+            @RequestParam(required = false) Long[] authorIds,
             @RequestParam String isbn,
             @RequestParam Double price,
             @RequestParam String description,
@@ -226,32 +241,32 @@ public class AdminController {
             MultipartFile bookFile
     ) throws IOException, SQLException {
         Book book = null;
-        if (authors.length() == 0) {
+        if (authorIds == null) {
             book = storeManagementService.createBook(
                     name,
-                    null,
-                    existingAuthors,
+                    categoryId,
+                    authors.split(";"),
                     isbn,
                     price
             );
-        } else if (existingAuthors.length == 0) {
+        } else if (authors == null || authors.length() == 0) {
             book = storeManagementService.createBook(
                     name,
-                    null,
-                    existingAuthors,
+                    categoryId,
+                    authorIds,
                     isbn,
                     price
             );
         } else {
             book = storeManagementService.createBook(
                     name,
-                    null,
-                    existingAuthors,
+                    categoryId,
+                    authors.split(";"),
+                    authorIds,
                     isbn,
                     price
             );
         }
-
         storeManagementService.addBookDetails(book.id, bookFile.getBytes(), bookFile.getContentType(), description);
         storeManagementService.addBookPicture(book.id, picture.getBytes(), picture.getContentType());
 
