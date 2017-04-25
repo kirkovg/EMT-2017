@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <div xmlns:th="http://www.thymeleaf.org">
-    <h4 th:if="${exception!=null}" class="panel panel-danger" th:text="${exception}"></h4>
-
     <h1>Products:</h1>
-
+    <h4 th:if="${exception!=null}" class="panel panel-danger" th:text="${exception}"></h4>
     <div th:each="prod : ${products}" class="row" style="margin-top: 10px;">
         <hr/>
         <div class="col-md-4">
             <img class="img img-responsive" th:src="@{/book/{id}/picture(id=${prod.id})}" width="150" height="150"/>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-4">
             <label>Name:</label>
             <div th:text="${prod.name}"></div>
             <label>ISBN:</label>
@@ -21,7 +19,18 @@
             <br/>
             <label><a th:href="@{/bookDetails/{bookId}(bookId=${prod.id})}">Details</a></label>
             <br/>
-            <button class="btn btn-success">Add to cart <span class="fa fa-shopping-cart"></span></button>
         </div>
+        <form class="col-md-4" method="POST" xmlns:th="http://www.thymeleaf.org"
+            th:action="@{/addToCart/category/{categoryId}/book/{bookId}(categoryId=${prod.category.id},bookId=${prod.id})}">
+            <label>Choose quantity</label>
+            <select name="quantity" class="btn btn-default" required="required">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
+            <input type="submit" value="Add to cart" class="btn btn-success"/>
+        </form>
     </div>
 </div>

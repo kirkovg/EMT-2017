@@ -5,7 +5,6 @@ import mk.ukim.finki.emt.model.exceptions.NotEnoughItemQuantityException;
 import mk.ukim.finki.emt.model.exceptions.NotEnoughStockException;
 import mk.ukim.finki.emt.model.jpa.*;
 import mk.ukim.finki.emt.model.search.BookSearchCriteria;
-import org.hibernate.annotations.Check;
 
 import java.util.List;
 
@@ -27,9 +26,11 @@ public interface StoreClientService {
 
   BookDetails getBookDetails(Long bookId);
 
-  CartItem addToCart(Long cartId, Long bookId, int quantity);
+  CartItem addToCart(Long cartId, Long bookId, int quantity) throws NotEnoughStockException;
 
-  CartItem removeFromCart(Long cartId, Long bookId, int quantity) throws NotEnoughStockException, NotEnoughItemQuantityException;
+  void removeFromCart(Long cartId, Long bookId, int quantity) throws NotEnoughStockException, NotEnoughItemQuantityException;
+
+  Double getTotalPriceFromCart(Long cartId);
 
   List<CartItem> getAllFromCart(Long cartId);
 

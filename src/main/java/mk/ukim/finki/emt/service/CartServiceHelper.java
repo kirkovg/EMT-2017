@@ -11,11 +11,13 @@ import java.util.List;
 public interface CartServiceHelper {
     Cart takeCart();
 
-    CartItem addToCart(Long cartId, Long bookId, int quantity);
+    CartItem addToCart(Long cartId, Long bookId, int quantity) throws NotEnoughStockException;
 
-    CartItem removeFromCart(Long cartId, Long bookId, int quantity) throws NotEnoughItemQuantityException, NotEnoughStockException;
+    void removeFromCart(Long cartId, Long bookId, int quantity) throws NotEnoughItemQuantityException, NotEnoughStockException;
 
     List<CartItem> getAllFromCart(Long cartId);
 
     void clearCart(Long cartId);
+
+    Double getTotalPriceFromCart(Long cartId);
 }

@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<style>
+    #product-info {
+        padding-left: 10px;
+        padding-top: 10px;
+    }
+</style>
 <div xmlns:th="http://www.thymeleaf.org">
     <h4 th:if="${exception!=null}" class="panel panel-danger" th:text="${exception}"></h4>
 
@@ -11,85 +17,78 @@
                     <th>Quantity</th>
                     <th class="text-center">Price</th>
                     <th class="text-center">Total</th>
+                    <th class="text-center col-lg-1">Remove Quantity</th>
                     <th> </th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td class="col-sm-8 col-md-6">
+                <!--TABLE DATA-->
+                <tr th:each="ct : ${cartItems}">
+                    <td class="col-lg-7">
                         <div class="media">
-                            <a class="thumbnail pull-left" >
-                                <img class="media-object" src="http://placehold.it/72x72" style="width: 72px; height: 72px;"/>
+                            <a class="thumbnail pull-left">
+                                <img class="media-object" th:src="@{/book/{id}/picture(id=${ct.book.id})}"
+                                     width="70" height="70"/>
                             </a>
-                            <div class="media-body">
-                                <h4 class="media-heading"><a href="#">Product name</a></h4>
-                                <h5 class="media-heading"> by <a href="#">Brand name</a></h5>
+                            <div class="media-body" id="product-info">
+                                <h4 class="media-heading" th:text="${ct.book.name}"></h4>
+                                <h5 class="media-heading">
+                                    <a th:href="@{/category/{categoryId}(categoryId=${ct.book.category.id})}"
+                                       th:text="${ct.book.category.name}">
+                                    </a>
+                                </h5>
                             </div>
-                        </div></td>
-                    <td class="col-sm-1 col-md-1" style="text-align: center">
-                       <strong>3</strong>
+                        </div>
                     </td>
-                    <td class="col-sm-1 col-md-1 text-center"><strong>$4.87</strong></td>
-                    <td class="col-sm-1 col-md-1 text-center"><strong>$14.61</strong></td>
-                    <td class="col-sm-1 col-md-1">
-                        <button type="button" class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove"></span> <span>Remove</span>
-                        </button></td>
-                </tr>
-                <tr>
-                    <td class="col-md-6">
-                        <div class="media">
-                            <a class="thumbnail pull-left" href="#"> <img class="media-object" src="http://placehold.it/72x72"
-                                                                          style="width: 72px; height: 72px;"/>
-                            </a>
-                            <div class="media-body">
-                                <h4 class="media-heading"><a href="#">Product name</a></h4>
-                                <h5 class="media-heading"> by <a href="#">Brand name</a></h5>
+                    <td class="col-lg-1" style="text-align: center">
+                        <strong th:text="${ct.quantity}"></strong>
+                    </td>
+                    <td class="col-lg-1 text-center">
+                        <strong th:text="${ct.book.price}">
+                        </strong><strong>$</strong>
+                    </td>
+                    <td class="col-lg-1 text-center" th:with="result=${ct.book.price * ct.quantity}">
+                        <strong th:text="${result}"></strong>
+                    </td>
+                    <td class="col-lg-2">
+                        <form class="row" method="POST" th:action="@{/cart/removeFromCart/{bookId}(bookId=${ct.book.id})}">
+                            <div class="col-lg-6">
+                                <input type="number" name="quantityToRemove" class="form-control" min="1" required="required"/>
                             </div>
-                        </div></td>
-                    <td class="col-md-1" style="text-align: center">
-                        <strong>2</strong>
+                            <div class="col-lg-6">
+                                <input type="submit" class="btn btn-danger" value="Remove from cart"/>
+                            </div>
+                        </form>
                     </td>
-                    <td class="col-md-1 text-center"><strong>$4.99</strong></td>
-                    <td class="col-md-1 text-center"><strong>$9.98</strong></td>
-                    <td class="col-md-1">
-                        <button type="button" class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove"></span> Remove
-                        </button></td>
                 </tr>
+                <!--/TABLE DATA-->
+
+
+
+                <!--CART INFO-->
                 <tr>
-                    <td>   </td>
-                    <td>   </td>
-                    <td>   </td>
-                    <td><h5>Subtotal</h5></td>
-                    <td class="text-right"><h5><strong>$24.59</strong></h5></td>
-                </tr>
-                <tr>
-                    <td>   </td>
-                    <td>   </td>
-                    <td>   </td>
-                    <td><h5>Estimated shipping</h5></td>
-                    <td class="text-right"><h5><strong>$6.94</strong></h5></td>
-                </tr>
-                <tr>
-                    <td>   </td>
-                    <td>   </td>
-                    <td>   </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td><h3>Total</h3></td>
-                    <td class="text-right"><h3><strong>$31.53</strong></h3></td>
+                    <td class="text-right"><h3><strong th:text="${totalPrice}"></strong><strong>$</strong></h3></td>
                 </tr>
                 <tr>
-                    <td>   </td>
-                    <td>   </td>
-                    <td>   </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td>
-                        <button type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-shopping-cart"></span> Continue Shopping
-                        </button></td>
+                        <form method="POST" th:action="@{/cart/clearCart}">
+                            <input type="submit" class="btn btn-danger" value="Clear cart"/>
+                        </form>
+                    </td>
                     <td>
                         <button type="button" class="btn btn-success">
                             Checkout <span class="glyphicon glyphicon-play"></span>
-                        </button></td>
+                        </button>
+                    </td>
                 </tr>
                 </tbody>
             </table>

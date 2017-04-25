@@ -54,12 +54,11 @@ public class CartHelperTest {
     }
 
     @Test
-    public void addToCart() {
+    public void addToCart() throws NotEnoughStockException {
         Book book = bookServiceHelper.createBook(
                 "book1",
                 0L,
                 new String[]{AUTHOR_NAME},
-                null,
                 "123",
                 300d
         );
@@ -85,7 +84,6 @@ public class CartHelperTest {
                 "book1",
                 0L,
                 new String[]{AUTHOR_NAME},
-                null,
                 "123",
                 300d
         );
@@ -98,13 +96,14 @@ public class CartHelperTest {
         cartItem.quantity = 5;
         cartItemRepository.save(cartItem);
 
-        cartItem = cartServiceHelper.removeFromCart(cart.id, book.id, 3);
+        cartServiceHelper.removeFromCart(cart.id, book.id, 3);
         book = bookRepository.findOne(book.id);
+        CartItem newItem = cartItemRepository.findByCartIdAndBookId(cart.id,book.id);
 
-        Assert.assertNotNull(cartItem);
+        Assert.assertNotNull(newItem);
         Assert.assertNotNull(book);
 
-        Assert.assertEquals(2, cartItem.quantity);
+        Assert.assertEquals(2, newItem.quantity);
         Assert.assertEquals((Integer) 13, book.quantityInStock);
     }
 
@@ -115,7 +114,6 @@ public class CartHelperTest {
                 "book1",
                 0L,
                 new String[]{AUTHOR_NAME},
-                null,
                 "123",
                 300d
         );
@@ -130,7 +128,7 @@ public class CartHelperTest {
 
         NotEnoughStockException expectedException = null;
         try {
-            cartItem = cartServiceHelper.removeFromCart(cart.id, book.id, 3);
+            cartServiceHelper.removeFromCart(cart.id, book.id, 3);
         } catch (NotEnoughStockException ex) {
             expectedException = ex;
         }
@@ -146,7 +144,6 @@ public class CartHelperTest {
                 "book1",
                 0L,
                 new String[]{AUTHOR_NAME},
-                null,
                 "123",
                 300d
         );
@@ -161,7 +158,7 @@ public class CartHelperTest {
 
         NotEnoughItemQuantityException expectedException = null;
         try {
-            cartItem = cartServiceHelper.removeFromCart(cart.id, book.id, 7);
+            cartServiceHelper.removeFromCart(cart.id, book.id, 7);
         } catch (NotEnoughItemQuantityException ex) {
             expectedException = ex;
         }
@@ -176,7 +173,6 @@ public class CartHelperTest {
                 "book1",
                 0L,
                 new String[]{AUTHOR_NAME},
-                null,
                 "123",
                 300d
         );
@@ -203,7 +199,6 @@ public class CartHelperTest {
                 "book1",
                 0L,
                 new String[]{AUTHOR_NAME},
-                null,
                 "123",
                 300d
         );
@@ -212,7 +207,6 @@ public class CartHelperTest {
                 "book2",
                 0L,
                 new String[]{AUTHOR_NAME},
-                null,
                 "1234",
                 550d
         );
@@ -233,4 +227,42 @@ public class CartHelperTest {
         System.out.println(items);
         Assert.assertNotNull(items);
     }
+
+    @Test
+    public void getTotalFromCart() {
+        Cart cart = cartServiceHelper.takeCart();
+        Book book1 = bookServiceHelper.createBook(
+                "book1",
+                0L,
+                new String[]{AUTHOR_NAME},
+                "123",
+                300d
+        );
+
+        Book book2 = bookServiceHelper.createBook(
+                "book2",
+                0L,
+                new String[]{AUTHOR_NAME},
+                "1234",
+                550d
+        );
+
+        CartItem cartItem = new CartItem();
+        cartItem.book = book1;
+        cartItem.cart = cart;
+        cartItem.quantity = 1;
+        cartItemRepository.save(cartItem);
+
+        CartItem cartItem2 = new CartItem();
+        cartItem2.book = book2;
+        cartItem2.cart = cart;
+        cartItem2.quantity = 2;
+        cartItemRepository.save(cartItem2);
+
+        Double totalPrice = cartServiceHelper.getTotalPriceFromCart(cart.id);
+        Assert.assertNotNull(totalPrice);
+        // last argument is the allowed difference between the first two arguments
+        Assert.assertEquals(1400d, totalPrice, 0);
+    }
+
 }

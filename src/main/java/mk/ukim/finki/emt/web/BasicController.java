@@ -1,7 +1,11 @@
 package mk.ukim.finki.emt.web;
 
+import mk.ukim.finki.emt.model.exceptions.NotEnoughItemQuantityException;
+import mk.ukim.finki.emt.model.exceptions.NotEnoughStockException;
 import mk.ukim.finki.emt.model.jpa.Book;
 import mk.ukim.finki.emt.model.jpa.BookPicture;
+import mk.ukim.finki.emt.model.jpa.Cart;
+import mk.ukim.finki.emt.model.jpa.CartItem;
 import mk.ukim.finki.emt.service.QueryService;
 import mk.ukim.finki.emt.service.StoreClientService;
 import mk.ukim.finki.emt.service.StoreManagementService;
@@ -13,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
@@ -25,11 +30,11 @@ import java.util.List;
 public class BasicController {
 
 
-    QueryService queryService;
+    private QueryService queryService;
 
-    StoreClientService storeClientService;
+    private StoreClientService storeClientService;
 
-    StoreManagementService storeManagementService;
+    private StoreManagementService storeManagementService;
 
     @Autowired
     public BasicController(QueryService queryService,
@@ -40,10 +45,83 @@ public class BasicController {
         this.storeManagementService = storeManagementService;
     }
 
+
+    // on call for this method there are two carts created. WHY?!
     @RequestMapping(value = {"/index", "/"}, method = RequestMethod.GET)
-    public String index(Model model) {
+    public String index(
+            Model model,
+            HttpSession session
+    ) {
+        session.setMaxInactiveInterval(15 * 60);  // 15 mins
+        session.setAttribute("cart", storeClientService.takeCart());
         model.addAttribute("products", queryService.getPromotedBooks(1, 20));
-        //model.addAttribute("theCart", storeClientService.takeCart());
+        return "index";
+    }
+
+    @RequestMapping(value = {"/cart"}, method = RequestMethod.GET)
+    public String cart(
+            Model model,
+            HttpSession session
+    ) {
+        Cart cart = (Cart) session.getAttribute("cart");
+        if (cart != null) {
+            model.addAttribute("cartItems", storeClientService.getAllFromCart(cart.id));
+            model.addAttribute("totalPrice", storeClientService.getTotalPriceFromCart(cart.id));
+        }
+        model.addAttribute("pageFragment", "cart");
+        return "index";
+    }
+
+
+    @RequestMapping(value = {"/addToCart/category/{categoryId}/book/{bookId}"}, method = RequestMethod.POST)
+    public String addToCart(
+            Model model,
+            HttpSession session,
+            @PathVariable Long categoryId,
+            @PathVariable Long bookId,
+            @RequestParam Integer quantity
+    ) throws NotEnoughStockException {
+        Cart cart = (Cart) session.getAttribute("cart");
+        if (cart != null) {
+           try {
+               storeClientService.addToCart(cart.id, bookId, quantity);
+           } catch (NotEnoughStockException ex) {
+               model.addAttribute("exception","Not enough stock");
+           }
+        }
+        return "redirect:/category/{categoryId}";
+    }
+
+    @RequestMapping(value = {"/cart/removeFromCart/{bookId}"}, method = RequestMethod.POST)
+    public String removeFromCart(
+            Model model,
+            HttpSession session,
+            @PathVariable Long bookId,
+            @RequestParam Integer quantityToRemove
+    ) throws NotEnoughStockException, NotEnoughItemQuantityException {
+        Cart cart = (Cart) session.getAttribute("cart");
+        if (cart != null) {
+            try {
+                storeClientService.removeFromCart(cart.id, bookId, quantityToRemove);
+            } catch (NotEnoughItemQuantityException ex) {
+                model.addAttribute("exception","You cannot substract that much quantity");
+            }
+        }
+
+        model.addAttribute("pageFragment","cart");
+        return "index";
+    }
+
+    @RequestMapping(value = {"/cart/clearCart"}, method = RequestMethod.POST)
+    public String clearCart(
+            Model model,
+            HttpSession session
+    ){
+        Cart cart = (Cart)session.getAttribute("cart");
+        if (cart != null) {
+            storeManagementService.clearCart(cart.id);
+        }
+        model.addAttribute("pageFragment","cart");
         return "index";
     }
 
@@ -58,15 +136,6 @@ public class BasicController {
         return "index";
     }
 
-    @RequestMapping(value = {"/cart"}, method = RequestMethod.GET)
-    public String cart(
-            //@PathVariable Long cartId,
-            Model model
-    ) {
-        //model.addAttribute("productsInCart", storeClientService.getAllFromCart(1L));
-        model.addAttribute("pageFragment", "cart");
-        return "index";
-    }
 
     @RequestMapping(value = {"/category/{categoryId}"}, method = RequestMethod.GET)
     public String categoryProducts(

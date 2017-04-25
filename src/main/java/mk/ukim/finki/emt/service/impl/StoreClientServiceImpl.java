@@ -1,6 +1,5 @@
 package mk.ukim.finki.emt.service.impl;
 
-import com.sun.corba.se.pept.transport.*;
 import com.sun.corba.se.pept.transport.ContactInfo;
 import mk.ukim.finki.emt.model.exceptions.NotEnoughItemQuantityException;
 import mk.ukim.finki.emt.model.exceptions.NotEnoughStockException;
@@ -58,13 +57,18 @@ public class StoreClientServiceImpl implements StoreClientService {
     }
 
     @Override
-    public CartItem addToCart(Long cartId, Long bookId, int quantity) {
+    public CartItem addToCart(Long cartId, Long bookId, int quantity) throws NotEnoughStockException {
         return cartServiceHelper.addToCart(cartId, bookId, quantity);
     }
 
     @Override
-    public CartItem removeFromCart(Long cartId, Long bookId, int quantity) throws NotEnoughStockException, NotEnoughItemQuantityException {
-        return cartServiceHelper.removeFromCart(cartId, bookId, quantity);
+    public void removeFromCart(Long cartId, Long bookId, int quantity) throws NotEnoughStockException, NotEnoughItemQuantityException {
+        cartServiceHelper.removeFromCart(cartId, bookId, quantity);
+    }
+
+    @Override
+    public Double getTotalPriceFromCart(Long cartId) {
+        return cartServiceHelper.getTotalPriceFromCart(cartId);
     }
 
     @Override

@@ -224,9 +224,6 @@ public class AdminController {
     }
 
 
-    /**
-     * TODO: Refactor this. BUGGY AF
-     */
     @RequestMapping(value = {"/admin/book"}, method = RequestMethod.POST)
     public String createProduct(
             Model model,
