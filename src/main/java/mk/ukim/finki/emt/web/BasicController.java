@@ -46,14 +46,15 @@ public class BasicController {
     }
 
 
-    // on call for this method there are two carts created. WHY?!
     @RequestMapping(value = {"/index", "/"}, method = RequestMethod.GET)
     public String index(
             Model model,
             HttpSession session
     ) {
         session.setMaxInactiveInterval(15 * 60);  // 15 mins
-        session.setAttribute("cart", storeClientService.takeCart());
+        if (session.getAttribute("cart") == null) {
+            session.setAttribute("cart", storeClientService.takeCart());
+        }
         model.addAttribute("products", queryService.getPromotedBooks(1, 20));
         return "index";
     }
@@ -68,6 +69,7 @@ public class BasicController {
             model.addAttribute("cartItems", storeClientService.getAllFromCart(cart.id));
             model.addAttribute("totalPrice", storeClientService.getTotalPriceFromCart(cart.id));
         }
+
         model.addAttribute("pageFragment", "cart");
         return "index";
     }
@@ -77,18 +79,21 @@ public class BasicController {
     public String addToCart(
             Model model,
             HttpSession session,
+            HttpServletResponse httpServletResponse,
             @PathVariable Long categoryId,
             @PathVariable Long bookId,
             @RequestParam Integer quantity
-    ) throws NotEnoughStockException {
+    ) throws NotEnoughStockException, IOException {
         Cart cart = (Cart) session.getAttribute("cart");
         if (cart != null) {
            try {
                storeClientService.addToCart(cart.id, bookId, quantity);
            } catch (NotEnoughStockException ex) {
-               model.addAttribute("exception","Not enough stock");
+               httpServletResponse.sendRedirect("/category/"+categoryId+"?error=Not enough stock");
+               return null;
            }
         }
+
         return "redirect:/category/{categoryId}";
     }
 
@@ -107,7 +112,7 @@ public class BasicController {
                 model.addAttribute("exception","You cannot substract that much quantity");
             }
         }
-
+        model.addAttribute("cartItems", storeClientService.getAllFromCart(cart.id));
         model.addAttribute("pageFragment","cart");
         return "index";
     }
@@ -140,11 +145,16 @@ public class BasicController {
     @RequestMapping(value = {"/category/{categoryId}"}, method = RequestMethod.GET)
     public String categoryProducts(
             @PathVariable Long categoryId,
+            @RequestParam(required = false) String error,
             Model model
     ) {
         Page<Book> page = queryService.getBooksInCategory(
                 categoryId, 0, 20
         );
+
+        if (error != null) {
+            model.addAttribute("error",error);
+        }
 
         model.addAttribute("products", page);
 

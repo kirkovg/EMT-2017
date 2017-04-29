@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <div xmlns:th="http://www.thymeleaf.org">
     <h1>Products:</h1>
-    <h4 th:if="${exception!=null}" class="panel panel-danger" th:text="${exception}"></h4>
+    <div class="text-danger" th:text="${error}"></div>
     <div th:each="prod : ${products}" class="row" style="margin-top: 10px;">
         <hr/>
         <div class="col-md-4">
