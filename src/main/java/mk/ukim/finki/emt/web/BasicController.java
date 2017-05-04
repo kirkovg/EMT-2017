@@ -52,10 +52,21 @@ public class BasicController {
             HttpSession session
     ) {
         session.setMaxInactiveInterval(15 * 60);  // 15 mins
-        if (session.getAttribute("cart") == null) {
+        if (session.getAttribute("cart") == null || session.isNew()) {
             session.setAttribute("cart", storeClientService.takeCart());
         }
         model.addAttribute("products", queryService.getPromotedBooks(1, 20));
+        return "index";
+    }
+
+    @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
+    public String login(Model model, HttpSession session, @RequestParam(required = false) String error) {
+        if (session.getAttribute("user") != null) {
+            return "redirect:/";
+        }
+        model.addAttribute("error", error);
+
+        model.addAttribute("pageFragment", "login");
         return "index";
     }
 
